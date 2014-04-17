@@ -1,0 +1,39 @@
+apply plugin: 'java'
+apply from: "$rootDir/gradle/cobertura.gradle"
+apply from: "$rootDir/gradle/checkstyle.gradle"
+apply from: "$rootDir/gradle/pmd.gradle"
+apply from: "$rootDir/gradle/findbugs.gradle"
+apply from: "$rootDir/gradle/jdepend.gradle"
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+defaultTasks = ['clean', 'runApp']
+ 
+dependencies {
+    compile 'org.slf4j:slf4j-api:1.6.2'
+    compile 'ch.qos.logback:logback-core:0.9.30'
+    compile 'ch.qos.logback:logback-classic:0.9.30'
+    compile 'javax.servlet:servlet-api:2.5'
+    compile 'org.eclipse.jetty.aggregate:jetty-all:7.5.4.v20111024'
+    compile 'org.eclipse.jetty:jetty-jsp:9.1.0.M0'
+    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'jetty:jasper-compiler:4.2.20RC0'
+    runtime 'jetty:jasper-runtime:4.2.20RC0'
+    runtime 'org.apache.ant:ant:1.9.2'
+    
+    // Test Dependencies
+    testCompile 'junit:junit:4.+'
+    testCompile 'se.mockachino:mockachino:0.6.0'
+}
+
+task runApp (dependsOn: 'classes', type: JavaExec) {
+    main = 'com.king.worktest.Starter'
+    args  '-verbose:class'
+    classpath = sourceSets.main.runtimeClasspath
+}
+

@@ -1,0 +1,19 @@
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath group: 'org.gradlefx', name: 'gradlefx', version: '0.7'
+	}
+}
+
+subprojects {
+
+	version = '1.0-SNAPSHOT'
+
+    repositories {
+        mavenCentral()
+    }
+
+    ext.configDir = new File(rootDir, 'config')
+}

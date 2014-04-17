@@ -1,0 +1,1 @@
+Change the value of flexHome in "client/build.gradle" to your local installation.

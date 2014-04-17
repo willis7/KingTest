@@ -1,0 +1,48 @@
+apply plugin: 'gradlefx'
+
+
+// GradleFX configurations
+flexHome = "D:/tools/flex_sdk_4.6"
+type = 'swf'
+mainClass = 'com/king/worktest/client/Client.as'
+output = 'WorkClient'
+
+// Repositories only required for Client so set here.
+// Added a few repos in the event one isnt available.
+repositories {
+	maven url: "http://projects.yoolab.org/maven/content/repositories/releases"
+	maven url: "http://projects.yoolab.org/maven/content/repositories/snapshots"
+	maven url: "http://opensource.adobe.com/svn/opensource/cairngorm3/maven-repository"
+	maven url: "http://ooo-maven.googlecode.com/hg/repository"
+	maven url: "http://repository.sonatype.org/content/groups/flexgroup/"
+}
+
+ext {
+	flexunit_version = '4.1.0-RC1.61'
+	hamcrest_as3_version = '1.0'
+	as3corelib_version = '0.93'
+}
+
+// Client only dependencies
+dependencies {
+	merged group: 'com.adobe', name: 'as3corelib', version: as3corelib_version, ext: 'swc'
+	merged group: 'org.hamcrest', name: 'hamcrest-as3', version: hamcrest_as3_version, ext: 'swc'
+
+	// Unfortunately these werent available via a Maven repo and so sourced locally via libs
+	test files(project.file('libs/flexUnitTasks-4.1.0-8.jar').absolutePath,
+				project.file('libs/flexunit-4.1.0-8-flex_4.1.0.16076.swc').absolutePath,
+				project.file('libs/flexunit-cilistener-4.1.0-8-4.1.0.16076.swc').absolutePath)
+}
+
+task deployJSON (type: Copy){
+	from '../shared/resources/levels'
+	into 'src/main/generated'
+}
+
+// Ensure the JSON dependency is deployed prior to compilation
+compileFlex.dependsOn 'deployJSON'
+
+flexUnit {
+	command = "${flexHome}/runtimes/player/11.1/win/FlashPlayerDebugger.exe"
+	includes = ['**/*Test.as']
+}
